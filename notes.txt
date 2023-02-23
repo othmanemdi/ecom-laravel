@@ -1,0 +1,110 @@
+// Create new project
+laravel new ecom
+cd ecom
+Create database
+go to .env and add database name
+php artisan serve
+localhost:8000
+
+Postmane prépare new collection
+
+// Create new model with migration
+php artisan make:model Category -m
+// Go to migration category and add
+$table->string("name");
+$table->softDeletes(); // this will create deleted_at field for softdelete
+
+// start the migration
+php artisan migrate
+
+// Go to model category and add 
+	use HasFactory, SoftDeletes;
+ protected $table = 'categories';
+ protected $fillable = ['name'];
+
+php artisan tinker
+Category::create(['name' => 'téléphones']);
+
+// Create controller
+// Generate 5 methodes (INDEX - STORE - SHOW - UPDATE - DESTROY)
+php artisan make:controller Api/CategoryController --resource --api --model=Category
+
+public function index()
+    {
+        return Category::all();
+    }
+
+// Go to route API
+Route::get('categories', [CategoryController::class, 'index']);
+php artisan route:list --path=api
+
+// Route::get('categories', [CategoryController::class, 'index']);
+// Route::get('categories/{category}', [CategoryController::class, 'show']);
+
+// Route::resource('categories', CategoryController::class);
+// Route::apiResource('categories', CategoryController::class);
+
+//Go to post man
+New collection
+localhost:8000/api/categories
+// Add headers
+Accept application/json
+
+// Resources
+php artisan make:resource CategoryResource
+
+//Go to app/resources/CategoryResource
+
+public function toArray($request)
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
+    }
+
+// Remove key data
+// Go to AppServiceProvider
+use Illuminate\Http\Resources\Json\JsonResource;
+public function boot()
+    {
+        JsonResource::withoutWrapping();
+    }
+
+// Showing error message exception
+
+// Go to class Handler extends ExceptionHandler Handler.php
+
+// public function register()
+    // {
+    //     $this->reportable(function (Throwable $e) {
+    //         //
+    //     });
+    // }
+
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+public function register()
+    {
+        $this->renderable(function (NotFoundHttpException $e) {
+            return response()->json(['message' => 'Object not found'], 404);
+        });
+    }
+
+
+// Stor data
+// Validation 
+php artisan make:request CategoryRequest
+
+public function rules()
+    {
+        return [
+            'name' => 'required|max:255',
+            'icon' => 'required|max:255',
+        ];
+    }
+}
+
+
+
+
+// Delete
