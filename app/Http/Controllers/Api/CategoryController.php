@@ -24,6 +24,21 @@ class CategoryController extends Controller
         return CategoryResource::collection(Category::all());
     }
 
+    public function index_2(Request $request)
+    {
+
+        if ($request->has('trashed')) {
+            return Category::onlyTrashed()
+                ->get();
+        } else {
+            return Category::select('id', 'name')->get();
+        }
+        return Category::select('id', 'name')->get();
+        // return Category::all();
+        // return Category::select('id', 'name', 'icon')->get();
+        return CategoryResource::collection(Category::all());
+    }
+
     /**
      * Store a newly created resource in storage.
      *

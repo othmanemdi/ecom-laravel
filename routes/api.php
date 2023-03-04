@@ -4,6 +4,9 @@ use App\Http\Controllers\Api\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth;
+use App\Http\Controllers\Api\CartProductsController;
+use App\Http\Controllers\Api\ProductController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,4 +37,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('profile', [Auth\ProfileController::class, 'update']);
     Route::put('password_update', Auth\PasswordUpdateController::class);
     Route::post('auth/logout', Auth\LogoutController::class);
+
+    Route::apiResource('products', ProductController::class);
+
+    // Cart
+    Route::get('cart/cartList', [CartProductsController::class, 'cartList']);
+    Route::post('cart/addToCart', [CartProductsController::class, 'addToCart']);
+    Route::put('cart/incrementCart', [CartProductsController::class, 'incrementCart']);
+
+    Route::put('cart/decrementCart', [CartProductsController::class, 'decrementCart']);
+
+    Route::delete('cart/removeFromCart', [CartProductsController::class, 'removeFromCart']);
+
+    Route::get('cart/getTotal', [CartProductsController::class, 'getTotal']);
+
+    Route::get('order/orderList', [CartProductsController::class, 'orderList']);
+    Route::post('order/createOrder', [CartProductsController::class, 'createOrder']);
 });
